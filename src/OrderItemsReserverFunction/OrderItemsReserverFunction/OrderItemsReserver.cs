@@ -19,13 +19,11 @@ namespace OrderItemsReserverFunction
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("C# HTTP trigger function 'OrderItemsReserver' processed a request.");
             var res = false;
 
             try
             {
-                string name = req.Query["name"];
-
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 dynamic data = JsonConvert.DeserializeObject(requestBody);
 
