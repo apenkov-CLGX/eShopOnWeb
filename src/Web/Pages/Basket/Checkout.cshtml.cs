@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Azure.Messaging.ServiceBus;
 using BlazorAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Json;
@@ -65,7 +66,8 @@ public class CheckoutModel : PageModel
             await _orderService.CreateOrderAsync(BasketModel.Id, address);
             await _basketService.DeleteBasketAsync(BasketModel.Id);
 
-            await CallAzureFunctionOrderItemsReserverAsync(BasketModel.Id, items.Sum(o => o.Quantity));
+            await SendOrderItemsReserverMessageAsync(BasketModel.Id, items.Sum(o => o.Quantity));
+            //await CallAzureFunctionOrderItemsReserverAsync(BasketModel.Id, items.Sum(o => o.Quantity));
             await CallAzureFunctionDeliveryOrderProcessorAsync(BasketModel.Id, address, items);
         }
         catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
@@ -121,6 +123,25 @@ public class CheckoutModel : PageModel
             "https://orderitemsreserver-apenkov.azurewebsites.net/api/OrderItemsReserver?code=WPeV4IdaR4DwLowBxUbegyHplRprMttTc-ekw2S7YCt8AzFus5Kd8w==",
             content
         );
+    }
+
+    private async Task SendOrderItemsReserverMessageAsync(int itemId, int quantity)
+    {
+        var option = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var json = JsonSerializer.Serialize(
+            new { ItemId = itemId, Quantity = quantity },
+            option);
+
+        await using var client = new ServiceBusClient("Endpoint=sb://eshop-service-bus-apenkov.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=9v2L+J+RZ2Iw2SbgWhJGPTEUVaCjrq0zSOXe5Snvh0A=");
+
+        await using ServiceBusSender sender = client.CreateSender("orderitemsreserverqueue");
+        var message = new ServiceBusMessage(json);
+        
+        _logger.LogInformation($"Sending message: {json}");
+        await sender.SendMessageAsync(message);
     }
 
     private async Task CallAzureFunctionDeliveryOrderProcessorAsync(int id, Address address, IEnumerable<BasketItemViewModel> items)
