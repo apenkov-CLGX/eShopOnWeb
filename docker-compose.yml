@@ -2,14 +2,14 @@ version: '3.4'
 
 services:
   eshopwebmvc:
-    image: ${DOCKER_REGISTRY-}eshopwebmvc
+    image: containerregistryapenkov.azurecr.io/eshopwebmvc:dev
     build:
       context: .
       dockerfile: src/Web/Dockerfile
     depends_on:
       - "sqlserver"
   eshoppublicapi:
-    image: ${DOCKER_REGISTRY-}eshoppublicapi
+    image: containerregistryapenkov.azurecr.io/eshoppublicapi:dev
     build:
       context: .
       dockerfile: src/PublicApi/Dockerfile
