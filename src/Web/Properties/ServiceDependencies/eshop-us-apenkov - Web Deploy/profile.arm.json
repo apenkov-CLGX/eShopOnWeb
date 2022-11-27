@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "eshop-eu-apenkov",
+      "defaultValue": "eshop-us-apenkov",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

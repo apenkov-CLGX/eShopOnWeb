@@ -29,9 +29,7 @@ namespace DeliveryOrderProcessorFunction
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 OrderDetails orderDetails = JsonConvert.DeserializeObject<OrderDetails>(requestBody);
 
-                CosmosClient client = new CosmosClient(
-                    "https://cosmosdb-apenkov.documents.azure.com:443/",
-                    "f6K0mAlJEMiWnYNMvc59GORmitpVozKiW070GKj39LtQLWz5JSPJSCVg9TZGC62I7moiMVT5XDCevtdgUeIbmA==");
+                CosmosClient client = new CosmosClient("AccountEndpoint=https://eshop-cosmo-db-apenkov.documents.azure.com:443/;AccountKey=cdCPfBWAXY2kQXCbXhZ42ZyRcWz0iecLTTSiG6RstwFYQopXnoWFFSyvNmYBgRc3WC6j5xwNs4PUACDbXXNAhw==;");
 
                 var database = client.GetDatabase("eShopOnWeb");
                 var orderDetailsContainer = database.GetContainer("OrderDetails");

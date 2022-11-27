@@ -66,8 +66,8 @@ public class CheckoutModel : PageModel
             await _orderService.CreateOrderAsync(BasketModel.Id, address);
             await _basketService.DeleteBasketAsync(BasketModel.Id);
 
-            await SendOrderItemsReserverMessageAsync(BasketModel.Id, items.Sum(o => o.Quantity));
             //await CallAzureFunctionOrderItemsReserverAsync(BasketModel.Id, items.Sum(o => o.Quantity));
+            await SendOrderItemsReserverMessageAsync(BasketModel.Id, items.Sum(o => o.Quantity));
             await CallAzureFunctionDeliveryOrderProcessorAsync(BasketModel.Id, address, items);
         }
         catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
@@ -135,7 +135,7 @@ public class CheckoutModel : PageModel
             new { ItemId = itemId, Quantity = quantity },
             option);
 
-        await using var client = new ServiceBusClient("Endpoint=sb://eshop-service-bus-apenkov.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=9v2L+J+RZ2Iw2SbgWhJGPTEUVaCjrq0zSOXe5Snvh0A=");
+        await using var client = new ServiceBusClient("Endpoint=sb://eshop-apenkov.servicebus.windows.net/;SharedAccessKeyName=BusPolicy;SharedAccessKey=Z/pWb2s0plZv0DTplxr87PdBz3wvm8JylftmxBjrf0k=;");
 
         await using ServiceBusSender sender = client.CreateSender("orderitemsreserverqueue");
         var message = new ServiceBusMessage(json);
@@ -168,7 +168,7 @@ public class CheckoutModel : PageModel
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         await _httpClient.PostAsync(
-            "https://orderitemsreserver-apenkov.azurewebsites.net/api/DeliveryOrderProcessor?code=Sv1coDN2xbfXi8lZNwp4oHvL5zDwsZ_jRWVFb9zWdaIlAzFuNSFetQ==",
+            "https://functions-apenkov.azurewebsites.net/api/DeliveryOrderProcessor?code=uYnIEg446tfpiQUKnujnA_V3Tb1Ve_qrclYmGb-baoM0AzFuv-8oeg==",
             content
         );
     }

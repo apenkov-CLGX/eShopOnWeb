@@ -26,7 +26,7 @@ namespace AzureFunctions
             MemoryStream stream = new MemoryStream(byteArray);
             stream.Position = 0;
 
-            var shareServiceClient = new ShareServiceClient("DefaultEndpointsProtocol=https;AccountName=storageapenkov;AccountKey=wJNnIkbX2mQ0vRHJH2EJpw1ryKbs8bmOA6WUKv0fuDx7cHKweysEQ3PFE6TxRn2l5MH3Jkdu/U8f+AStNy8toQ==;EndpointSuffix=core.windows.net");
+            var shareServiceClient = new ShareServiceClient("DefaultEndpointsProtocol=https;AccountName=storageapenkov;AccountKey=MUZR/o0cUD1ksinNAdxBIF2y+03MPsMcybY01jl0U0G+pUuVPl23lQobjzUEPNYz+u4XuC88TPFY+AStcszOcw==;EndpointSuffix=core.windows.net");
             var shareClient = shareServiceClient.GetShareClient("order");
             var shareDirectoryClient = shareClient.GetRootDirectoryClient();
 
